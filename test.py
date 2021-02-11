@@ -16,7 +16,7 @@ from utils import progress_bar
 
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
-pparser.add_argument('--net_sav', default='./checkpoint/ckpt.pth', type=str, help='network save file')
+parser.add_argument('--net_sav', default='./checkpoint/ckpt.pth', type=str, help='network save file')
 args = parser.parse_args()
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -69,14 +69,12 @@ if device == 'cuda':
 
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=args.lr,
-                      momentum=0.9, weight_decay=5e-4)
-scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
+
 
 
 def test(network_save_file):
 
-    checkpoint = torch.load(netwok_file)
+    checkpoint = torch.load(network_save_file)
     net.load_state_dict(checkpoint['net'])
     training_acc = checkpoint['acc']
     training_epoch = checkpoint['epoch']
@@ -102,5 +100,4 @@ def test(network_save_file):
                          % (test_loss/(batch_idx+1), 100.*correct/total, correct, total))
 
 
-    
 test(args.net_sav)
