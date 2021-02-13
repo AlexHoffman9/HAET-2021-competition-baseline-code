@@ -13,7 +13,7 @@ import argparse
 
 
 from utils import progress_bar
-
+from models import ResNet18
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
 parser.add_argument('--net_sav', default='./checkpoint/ckpt.pth', type=str, help='network save file')
@@ -61,7 +61,9 @@ class Net(nn.Module):
         x = self.fc3(x)
         return x
 
-net = Net() #Define your network here
+# net = Net() #Define your network here
+# net = torch.hub.load('pytorch/vision:v0.6.0', 'resnet18', pretrained=False)
+net = ResNet18()
 net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
@@ -73,7 +75,8 @@ criterion = nn.CrossEntropyLoss()
 
 
 def test(network_save_file):
-
+    net = torch.hub.load('pytorch/vision:v0.6.0', 'resnet18', pretrained=False, num_classes=10)
+    net = torch.nn.DataParallel(net)
     checkpoint = torch.load(network_save_file)
     net.load_state_dict(checkpoint['net'])
     training_acc = checkpoint['acc']
